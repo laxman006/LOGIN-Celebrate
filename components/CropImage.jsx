@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
+import { Filesystem, Directory } from '@capacitor/filesystem';
 import { getCroppedImg } from '../utils/cropImage';
 
 const CropImage = () => {
@@ -10,27 +11,54 @@ const CropImage = () => {
   const [aspect, setAspect] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [croppedImage, setCroppedImage] = useState(null);
-  const [filter, setFilter] = useState('none');
 
-  const onCropComplete = useCallback((_, croppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
+  const onCropComplete = useCallback((_, croppedArea) => {
+    setCroppedAreaPixels(croppedArea);
   }, []);
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = useCallback((e) => {
     const file = e.target.files[0];
+    if (!file) return;
+
     const reader = new FileReader();
     reader.onload = () => setImageSrc(reader.result);
     reader.readAsDataURL(file);
-  };
+  }, []);
 
-  const handleCrop = async () => {
+  const handleCrop = useCallback(async () => {
+    if (!imageSrc || !croppedAreaPixels) return;
+
     try {
-      const croppedImg = await getCroppedImg(imageSrc, croppedAreaPixels, rotation, filter);
+      const croppedImg = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
       setCroppedImage(croppedImg);
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error('Cropping failed:', error);
     }
-  };
+  }, [imageSrc, croppedAreaPixels, rotation]);
+
+  const saveImage = useCallback(async () => {
+    if (!croppedImage) return;
+
+    try {
+      const response = await fetch(croppedImage);
+      const blob = await response.blob();
+
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64data = reader.result.split(',')[1];
+        await Filesystem.writeFile({
+          path: `cropped-image-${Date.now()}.jpg`,
+          data: base64data,
+          directory: Directory.Documents,
+        });
+        alert('Image saved successfully!');
+      };
+      reader.readAsDataURL(blob);
+    } catch (error) {
+      console.error('Saving image failed:', error);
+      alert('Failed to save the image.');
+    }
+  }, [croppedImage]);
 
   const resetCrop = () => {
     setImageSrc(null);
@@ -39,7 +67,6 @@ const CropImage = () => {
     setRotation(0);
     setAspect(1);
     setCroppedImage(null);
-    setFilter('none');
   };
 
   return (
@@ -60,18 +87,30 @@ const CropImage = () => {
               aspect={aspect || undefined}
               onCropChange={setCrop}
               onZoomChange={setZoom}
-              onRotationChange={setRotation}
               onCropComplete={onCropComplete}
             />
           </div>
           <div style={styles.controls}>
             <label>
               Zoom
-              <input type="range" min={1} max={3} step={0.1} value={zoom} onChange={(e) => setZoom(e.target.value)} />
+              <input
+                type="range"
+                min={1}
+                max={3}
+                step={0.1}
+                value={zoom}
+                onChange={(e) => setZoom(Number(e.target.value))}
+              />
             </label>
             <label>
               Rotation
-              <input type="range" min={0} max={360} value={rotation} onChange={(e) => setRotation(e.target.value)} />
+              <input
+                type="range"
+                min={0}
+                max={360}
+                value={rotation}
+                onChange={(e) => setRotation(Number(e.target.value))}
+              />
             </label>
             <label>
               Aspect Ratio
@@ -82,28 +121,21 @@ const CropImage = () => {
                 <option value={0}>Free</option>
               </select>
             </label>
-            <label>
-              Filter
-              <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-                <option value="none">None</option>
-                <option value="grayscale(1)">Grayscale</option>
-                <option value="sepia(1)">Sepia</option>
-                <option value="contrast(1.5)">High Contrast</option>
-                <option value="blur(2px)">Blur</option>
-              </select>
-            </label>
-            <button onClick={handleCrop} style={styles.button}>Crop</button>
-            <button onClick={resetCrop} style={{ ...styles.button, backgroundColor: 'gray' }}>Reset</button>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+              <button onClick={handleCrop} style={styles.button}>Crop</button>
+              <button onClick={resetCrop} style={{ ...styles.button, backgroundColor: 'gray' }}>Reset</button>
+            </div>
           </div>
         </>
       )}
+
       {croppedImage && (
         <div style={styles.previewContainer}>
           <h3 style={{ fontWeight: 'bold' }}>Preview</h3>
-          <img src={croppedImage} alt="Cropped" style={{ ...styles.previewImage, filter }} />
-          <a href={croppedImage} download="cropped-image.jpg" style={{ ...styles.button, backgroundColor: 'green' }}>
-            Download Cropped Image
-          </a>
+          <img src={croppedImage} alt="Cropped" style={styles.previewImage} />
+          <button onClick={saveImage} style={{ ...styles.button, backgroundColor: 'green' }}>
+            Save Image
+          </button>
         </div>
       )}
     </div>
