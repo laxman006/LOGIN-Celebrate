@@ -1,84 +1,74 @@
-import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Preferences } from '@capacitor/preferences';
-import HappyBirthdayModal from './HappyBirthdayModal';
+import { useState } from 'react';
 
 const LoginForm = () => {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showBirthday, setShowBirthday] = useState(false);
+  const [showError, setShowError] = useState(false);
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    // In real app, verify username/password
-    if (username && password) {
-      // Check if first time login
-      let seen = localStorage.getItem('seenHappyBirthday');
-      try {
-        const { value } = await Preferences.get({ key: 'seenHappyBirthday' });
-        if (value) seen = value;
-      } catch (e) {
-        console.log('Native Preferences not ready.');
-      }
 
-      if (!seen) {
-        setShowBirthday(true);
-        localStorage.setItem('seenHappyBirthday', 'true');
-        try {
-          await Preferences.set({ key: 'seenHappyBirthday', value: 'true' });
-        } catch (e) {
-          console.log('Failed to save in Preferences.');
-        }
-      } else {
-        router.push('/dashboard'); // move to dashboard or home page
-      }
+    // Simulate login logic
+    if (username && password) {
+      setShowError(false);
+      router.push('/profile'); // Redirect to profile after login
+    } else {
+      setShowError(true); // Show error if username or password is missing
     }
   };
 
-  const handleCloseBirthday = () => {
-    setShowBirthday(false);
-    router.push('/dashboard');
-  };
-
   return (
-    <>
-      <form onSubmit={handleLogin} style={styles.form}>
-        <h2>Login</h2>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <button type="submit" style={styles.button}>Login</button>
-      </form>
-      {showBirthday && <HappyBirthdayModal onClose={handleCloseBirthday} />}
-    </>
+    <form onSubmit={handleLogin} style={styles.form}>
+      <h2>Login</h2>
+      <input
+        type="text"
+        placeholder="Enter your username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        style={styles.input}
+      />
+      <input
+        type="password"
+        placeholder="Enter your password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        style={styles.input}
+      />
+      <button type="submit" style={styles.button}>
+        Login
+      </button>
+      {showError && <p style={styles.error}>Please fill in all fields</p>}
+    </form>
   );
 };
 
 const styles = {
   form: {
-    display: 'flex', flexDirection: 'column', gap: '10px',
-    width: '300px', padding: '20px', border: '1px solid #ccc', borderRadius: '8px'
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    width: '300px',
+    padding: '20px',
+    border: '1px solid #ccc',
+    borderRadius: '8px',
+    textAlign: 'center',
   },
   input: {
-    padding: '10px', fontSize: '16px',
+    padding: '10px',
+    fontSize: '16px',
   },
   button: {
-    padding: '10px', fontSize: '18px', borderRadius: '5px', cursor: 'pointer',
-  }
+    padding: '10px',
+    fontSize: '18px',
+    borderRadius: '5px',
+    cursor: 'pointer',
+  },
+  error: {
+    color: 'red',
+    fontSize: '14px',
+  },
 };
 
 export default LoginForm;
