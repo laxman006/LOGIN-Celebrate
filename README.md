@@ -14,7 +14,8 @@ Whether you're celebrating or coding, this project shows how you can bridge the 
 ---
 
 📹 Demo  
-▶️ Watch the Demo Video → Click [here]([https://drive.google.com/file/d/1N6rFHEukvMFvr57CsCTZNrMhc7ydDP9Q/view?usp=drive_web](https://drive.google.com/file/d/13yKqNGjQYrnGYhiPtIM1fQG-LL6pxM0E/view?usp=drive_link))
+▶️ Watch the Demo Video → Click [here](https://drive.google.com/file/d/13yKqNGjQYrnGYhiPtIM1fQG-LL6pxM0E/view?usp=drive_link)
+
 
 See it in action — Web App running as an Android App! 📱🔥
 
