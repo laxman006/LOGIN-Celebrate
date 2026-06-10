@@ -1,28 +1,23 @@
 {
   "name": "claude-hub",
-  "version": "0.1.0",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "export": "next export"
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "build:registry": "tsx scripts/build-registry.ts",
+    "preview": "pnpm --filter web preview",
+    "typecheck": "pnpm --filter web typecheck",
+    "lint": "pnpm --filter web lint"
   },
-  "dependencies": {
-    "@capacitor/android": "^7.2.0",
-    "@capacitor/camera": "^7.0.1",
-    "@capacitor/cli": "^7.2.0",
-    "@capacitor/core": "^7.2.0",
-    "@capacitor/filesystem": "^7.0.1",
-    "@capacitor/preferences": "^7.0.1",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@mui/material": "^7.0.2",
-    "canvas-confetti": "^1.9.3",
-    "next": "15.3.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-easy-crop": "^5.4.1"
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.8.3",
+    "zod": "^3.24.2"
+  },
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
   }
 }

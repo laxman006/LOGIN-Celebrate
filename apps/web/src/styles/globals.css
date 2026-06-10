@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ─── Surfaces (dark base) ─── */
+    --base: 240 6% 5%;         /* #0b0b0e */
+    --surface-1: 240 5% 8%;    /* #111116 */
+    --surface-2: 240 5% 11%;   /* #181820 */
+    --surface-3: 240 4% 16%;   /* #232330 */
+
+    /* ─── Text ─── */
+    --text-primary: 240 5% 96%;   /* #f3f3f8 */
+    --text-secondary: 240 4% 65%; /* #a3a3b0 */
+    --text-muted: 240 3% 40%;     /* #636370 */
+
+    /* ─── Electric accent — violet ─── */
+    --accent: 263 80% 70%;        /* #a78bfa */
+    --accent-bright: 263 90% 78%; /* #c4b5fd */
+    --accent-muted: 263 60% 25%;  /* #3b1f6b */
+    --accent-fg: 240 6% 5%;       /* dark text on accent bg */
+
+    /* ─── Borders ─── */
+    --border: 240 5% 18%;         /* rgba white ~8% */
+    --border-bright: 240 5% 26%;  /* rgba white ~15% */
+
+    /* ─── Semantic ─── */
+    --success: 152 65% 54%;   /* #34d399 */
+    --warning: 38 92% 58%;    /* #fbbf24 */
+    --destructive: 0 72% 58%; /* #f87171 */
+
+    /* ─── Radius ─── */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+
+    /* ─── Typography ─── */
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-display: "Inter", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    @apply bg-base text-text-primary;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-3 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-border-bright;
+  }
+
+  /* Focus ring */
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-1 ring-offset-base;
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: hsl(var(--accent-muted));
+    color: hsl(var(--text-primary));
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Code blocks */
+  code, pre {
+    font-family: var(--font-mono);
+  }
+
+  /* Remove default button styles */
+  button {
+    cursor: pointer;
+  }
+
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Gradient text utility */
+  .gradient-text {
+    @apply bg-gradient-to-r from-accent-bright to-accent bg-clip-text text-transparent;
+  }
+
+  /* Glass surface */
+  .glass {
+    @apply bg-surface-1/80 backdrop-blur-md border border-border;
+  }
+
+  /* Inset border glow on hover */
+  .accent-glow {
+    box-shadow: 0 0 0 1px hsl(var(--accent) / 0.3),
+                0 0 20px hsl(var(--accent) / 0.1);
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "claude-hub",
+  "version": "0.1.0",
+  "description": "CLI for the Claude Hub registry — npx claude-hub add skill <name>",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "claude-hub": "./dist/index.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "tsx": "^4.19.2",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
