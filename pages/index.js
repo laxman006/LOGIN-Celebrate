@@ -5,7 +5,7 @@ export default function Home() {
 
   return (
     <div style={styles.container}>
-      <h1>Welcome to PPY Technologies</h1>
+      <h1>Welcome to Claude Hub</h1>
       <div style={styles.buttonContainer}>
         <button style={styles.button} onClick={() => router.push('/login')}>Login</button>
         <button style={styles.button} onClick={() => router.push('/signup')}>Signup</button>

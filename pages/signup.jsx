@@ -12,7 +12,6 @@ export default function Signup() {
     // Save user in localStorage (Simple for demo)
     const user = { username, password };
     localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('firstTime', 'true');
 
     alert('Signup successful!');
     router.push('/login');
